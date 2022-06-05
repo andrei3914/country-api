@@ -1,0 +1,59 @@
+@import '../breakpoints.scss';
+
+.inputs-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 1rem;
+    gap: 1rem;
+
+    @include up($sm) {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .search-country-pair {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: var(--elements-color);
+        box-shadow: var(--shadow-card);
+
+        padding: 0.5rem 1rem;
+        border: 1px solid transparent;
+        border-radius: 3px;
+
+        label {
+            img {
+                margin-top: 0.5rem;
+            }
+        }
+
+        input {
+            border: 0;
+
+            background-color: var(--elements-color);
+            color: var(--text-color);
+            font-size: var(--homepage-text-size);
+
+            &:focus {
+                outline: none
+            }
+        }
+
+    }
+
+    .select-country {
+        background-color: var(--elements-color);
+        color: var(--text-color);
+        font-size: var(--homepage-text-size);
+        box-shadow: var(--shadow-card);
+
+        border: none;
+        border-radius: 3px;
+        padding: 1rem;
+
+        outline: none;
+    }
+}

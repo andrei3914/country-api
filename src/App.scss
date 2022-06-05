@@ -1,0 +1,31 @@
+:root {
+  --elements-color: hsl(0, 0%, 100%);
+  --background-color: hsl(0, 0%, 98%);
+  --text-color: hsl(200, 15%, 8%);
+  --input-color: hsl(0, 0%, 52%);
+  --shadow-card: 0 0.15rem 1rem #0000001c;
+  --homepage-text-size: 14px;
+  --detailpage-text-size: 16px;
+}
+
+.darkmode {
+  --elements-color: hsl(209, 23%, 22%);
+  --background-color: hsl(207, 26%, 17%);
+  --text-color: hsl(0, 0%, 100%);
+}
+
+@import './breakpoints.scss';
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap');
+
+html, body, h1 {
+  margin: 0;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.padding {
+  padding: 2rem 1rem;
+
+  @include up($sm) {
+      padding: 1rem 3rem; 
+   }
+}
