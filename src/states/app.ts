@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Action, createStore, createHook } from "react-sweet-state";
 
-type Country = {
+export type Country = {
   flag: string;
   population: number;
   name: string;
@@ -18,11 +18,13 @@ type Country = {
 interface AppState {
   loadingGetAll: boolean;
   allCountries?: Country[];
+  singleCountry?: Country;
 }
 
 const initialState: AppState = {
   loadingGetAll: false,
   allCountries: undefined,
+  singleCountry: undefined,
 };
 
 const actions = {
@@ -42,7 +44,44 @@ const actions = {
             capital: el.capital,
           });
         });
+
         setState({ allCountries: countries, loadingGetAll: false });
+      } catch (err) {
+        console.log("Fetch error", err);
+        setState({ loadingGetAll: false });
+      }
+    },
+
+  getSingleCountry:
+    (value: string): Action<AppState> =>
+    async ({ setState }) => {
+      try {
+        let country: Country = {
+          flag: "",
+          population: 0,
+          name: "",
+          region: "",
+          capital: "",
+        };
+        const response = await axios.get(
+          `https://restcountries.com/v2/name/${value}`
+        );
+
+        if (response.data) {
+          country.name = response.data[0].name.common;
+          country.capital = response.data[0].capital;
+          country.flag = response.data[0].flags.png;
+          country.region = response.data[0].region;
+          country.population = response.data[0].population;
+          country.nativeName = response.data[0].name.nativeName;
+          country.subRegion = response.data[0].subregion;
+          country.borderCountries = response.data[0].borders;
+          country.domain = response.data[0].tld;
+          country.currencies = response.data[0].currencies.name;
+          country.languages = response.data[0].languages;
+
+          setState({ singleCountry: country });
+        }
       } catch (err) {
         console.log("Fetch error", err);
         setState({ loadingGetAll: false });

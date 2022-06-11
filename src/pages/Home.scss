@@ -11,13 +11,18 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
         gap: 2rem;
+
+        button {
+            padding: 0;
+            border: none;
+        }
     }
 }
 
 .container-header {
     display: flex;
     justify-content: space-between;
-
+    height: 5vh;
     
     background-color: var(--elements-color);
     box-shadow: var(--shadow-card);

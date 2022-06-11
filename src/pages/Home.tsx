@@ -3,13 +3,17 @@ import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
 
 import Inputs from "../components/Inputs";
+import SingleCountry from "../components/SingleCountry";
 import { useAppState } from "../states/app";
 
 import "./Home.scss";
 
 const Home = () => {
   const [dark, setDark] = useState(false);
-  const [{ allCountries, loadingGetAll }, { getAllCountries }] = useAppState();
+  const [
+    { allCountries, loadingGetAll, singleCountry },
+    { getAllCountries, getSingleCountry },
+  ] = useAppState();
 
   useEffect(() => {
     getAllCountries();
@@ -46,17 +50,24 @@ const Home = () => {
             allCountries &&
             allCountries.map((country, index) => {
               return (
-                <Card
+                <button
                   key={`${country.name}-${index}`}
-                  flag={country.flag}
-                  name={country.name}
-                  population={country.population}
-                  region={country.region}
-                  capital={country.capital}
-                />
+                  onClick={() => getSingleCountry(country.name)}
+                >
+                  <Card
+                    flag={country.flag}
+                    name={country.name}
+                    population={country.population}
+                    region={country.region}
+                    capital={country.capital}
+                  />
+                </button>
               );
             })
           )}
+          {singleCountry ? (
+            <SingleCountry open={!!singleCountry} country={singleCountry} />
+          ) : null}
         </div>
       </section>
     </div>
