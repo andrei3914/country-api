@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Card from "../components/Card"
 
 import Inputs from "../components/Inputs"
@@ -10,6 +10,9 @@ import "./Home.scss"
 
 const Home = () => {
   const [dark, setDark] = useState(false)
+  const [countryName, setCountryName] = useState("")
+  const [regionName, setRegionName] = useState("")
+
   const [
     { allCountries, loadingGetAll, singleCountry },
     { getAllCountries, getSingleCountry },
@@ -25,6 +28,26 @@ const Home = () => {
   const _handleDark = () => {
     dark === false ? setDark(true) : setDark(false)
   }
+
+  const filteredCountries = useMemo(() => {
+    if (allCountries) {
+      const countries = allCountries
+      if (!countryName && !regionName) return countries
+      else {
+        return countryName
+          ? countries.filter(
+              country =>
+                country.name &&
+                country.name.toLowerCase().includes(countryName.toLowerCase())
+            )
+          : countries.filter(
+              country =>
+                country.region &&
+                country.region.toLowerCase().includes(regionName.toLowerCase())
+            )
+      }
+    }
+  }, [countryName, regionName, allCountries])
 
   return (
     <div className={clsx("container", dark && "darkmode")}>
@@ -52,22 +75,25 @@ const Home = () => {
           />
         ) : (
           <div>
-            <Inputs dark={dark} />
+            <Inputs
+              dark={dark}
+              countryName={countryName}
+              setCountryName={setCountryName}
+              regionName={regionName}
+              setRegionName={setRegionName}
+            />
             <div className="home-body">
               {loadingGetAll ? (
                 <div>Loading countries...</div>
               ) : (
-                allCountries &&
-                allCountries.map((country, index) => {
+                filteredCountries &&
+                filteredCountries.map((country, index) => {
                   return (
                     <button
                       key={`${country.name}-${index}`}
                       onClick={() => {
                         getSingleCountry(country.name)
                         setOpen(true)
-                      }}
-                      style={{
-                        borderRadius: "7px",
                       }}
                     >
                       <Card
