@@ -87,6 +87,12 @@ const actions = {
         setState({ loadingGetAll: false });
       }
     },
+
+  clearSingleCountry:
+    (): Action<AppState> =>
+    ({ setState }) => {
+      setState({ singleCountry: undefined });
+    },
 };
 
 const AppStateStore = createStore({ initialState, actions });

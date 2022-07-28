@@ -1,0 +1,16 @@
+.single-country-container {
+    position: fixed;
+    z-index: 1000;
+    top: 8vh;
+    left: 0;
+    
+    padding: 2rem 3rem;
+
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color);
+
+    .get-back-button {
+        padding: 2rem 1rem;
+    }
+}

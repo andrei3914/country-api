@@ -14,12 +14,19 @@ const Home = () => {
     { allCountries, loadingGetAll, singleCountry },
     { getAllCountries, getSingleCountry },
   ] = useAppState();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     getAllCountries();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    open
+      ? (document.body.style.overflow = "hidden")
+      : (document.body.style.overflow = "auto");
+  }, [open]);
 
   const _handleDark = () => {
     dark === false ? setDark(true) : setDark(false);
@@ -42,33 +49,46 @@ const Home = () => {
         </button>
       </header>
       <section className="container-body padding">
-        <Inputs dark={dark} />
-        <div className="home-body">
-          {loadingGetAll ? (
-            <div>Loading countries...</div>
-          ) : (
-            allCountries &&
-            allCountries.map((country, index) => {
-              return (
-                <button
-                  key={`${country.name}-${index}`}
-                  onClick={() => getSingleCountry(country.name)}
-                >
-                  <Card
-                    flag={country.flag}
-                    name={country.name}
-                    population={country.population}
-                    region={country.region}
-                    capital={country.capital}
-                  />
-                </button>
-              );
-            })
-          )}
-          {singleCountry ? (
-            <SingleCountry open={!!singleCountry} country={singleCountry} />
-          ) : null}
-        </div>
+        {singleCountry ? (
+          <SingleCountry
+            open={open}
+            country={singleCountry}
+            setOpen={setOpen}
+          />
+        ) : (
+          <div>
+            <Inputs dark={dark} />
+            <div className="home-body">
+              {loadingGetAll ? (
+                <div>Loading countries...</div>
+              ) : (
+                allCountries &&
+                allCountries.map((country, index) => {
+                  return (
+                    <button
+                      key={`${country.name}-${index}`}
+                      onClick={() => {
+                        getSingleCountry(country.name);
+                        setOpen(true);
+                      }}
+                      style={{
+                        borderRadius: "7px",
+                      }}
+                    >
+                      <Card
+                        flag={country.flag}
+                        name={country.name}
+                        population={country.population}
+                        region={country.region}
+                        capital={country.capital}
+                      />
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

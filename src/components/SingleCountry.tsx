@@ -1,18 +1,28 @@
 import React from "react";
-import { Country } from "../states/app";
+import { Country, useAppState } from "../states/app";
 
-import "./SingleCountry.scss";
+import styles from "./SingleCountry.Module.scss";
 
 interface Props {
   open: boolean;
   country: Country;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SingleCountry: React.FC<Props> = ({ open, country }) => {
+const SingleCountry: React.FC<Props> = ({ open, country, setOpen }) => {
+  const [, { clearSingleCountry }] = useAppState();
+
+  const _handleGoBack = () => {
+    setOpen(false);
+    clearSingleCountry();
+  };
+
   return open ? (
-    <div className="single-country-container">
+    <div className={styles["single-country-container"]}>
       <header>
-        <button>Back</button>
+        <button onClick={_handleGoBack} className={styles["get-back-button"]}>
+          Back
+        </button>
       </header>
       <div className="country-body">
         <div className="country-flag"></div>
@@ -29,7 +39,7 @@ const SingleCountry: React.FC<Props> = ({ open, country }) => {
                 <span>{country.population}</span>
               </p>
               <p>
-                <span>Region</span>
+                <span>Region: </span>
                 <span>{country.region}</span>
               </p>
               <p>
@@ -42,7 +52,7 @@ const SingleCountry: React.FC<Props> = ({ open, country }) => {
               </p>
             </div>
             <div>
-              <p>
+              {/* <p>
                 <span>Top Level Domain: </span>
                 {country.domain && <span>{country.domain[0]}</span>}
               </p>
@@ -53,7 +63,7 @@ const SingleCountry: React.FC<Props> = ({ open, country }) => {
               <p>
                 <span>Languages: </span>
                 {country.languages && <span>{country.languages[0]}</span>}
-              </p>
+              </p> */}
             </div>
           </div>
           <footer>
