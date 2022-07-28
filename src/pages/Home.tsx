@@ -1,36 +1,30 @@
-import clsx from "clsx";
-import React, { useEffect, useState } from "react";
-import Card from "../components/Card";
+import clsx from "clsx"
+import { useEffect, useState } from "react"
+import Card from "../components/Card"
 
-import Inputs from "../components/Inputs";
-import SingleCountry from "../components/SingleCountry";
-import { useAppState } from "../states/app";
+import Inputs from "../components/Inputs"
+import SingleCountry from "../components/SingleCountry"
+import { useAppState } from "../states/app"
 
-import "./Home.scss";
+import "./Home.scss"
 
 const Home = () => {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(false)
   const [
     { allCountries, loadingGetAll, singleCountry },
     { getAllCountries, getSingleCountry },
-  ] = useAppState();
-  const [open, setOpen] = useState(false);
+  ] = useAppState()
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    getAllCountries();
+    getAllCountries()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    open
-      ? (document.body.style.overflow = "hidden")
-      : (document.body.style.overflow = "auto");
-  }, [open]);
+  }, [])
 
   const _handleDark = () => {
-    dark === false ? setDark(true) : setDark(false);
-  };
+    dark === false ? setDark(true) : setDark(false)
+  }
 
   return (
     <div className={clsx("container", dark && "darkmode")}>
@@ -53,6 +47,7 @@ const Home = () => {
           <SingleCountry
             open={open}
             country={singleCountry}
+            dark={dark}
             setOpen={setOpen}
           />
         ) : (
@@ -68,8 +63,8 @@ const Home = () => {
                     <button
                       key={`${country.name}-${index}`}
                       onClick={() => {
-                        getSingleCountry(country.name);
-                        setOpen(true);
+                        getSingleCountry(country.name)
+                        setOpen(true)
                       }}
                       style={{
                         borderRadius: "7px",
@@ -83,7 +78,7 @@ const Home = () => {
                         capital={country.capital}
                       />
                     </button>
-                  );
+                  )
                 })
               )}
             </div>
@@ -91,7 +86,7 @@ const Home = () => {
         )}
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

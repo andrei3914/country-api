@@ -1,40 +1,53 @@
-import axios from "axios";
-import { Action, createStore, createHook } from "react-sweet-state";
+import axios from "axios"
+import { Action, createStore, createHook } from "react-sweet-state"
+
+type Currency = {
+  code: string
+  name: string
+  symbol: string
+}
+
+type Language = {
+  iso639_1: string
+  iso639_2: string
+  name: string
+  nativeName: string
+}
 
 export type Country = {
-  flag: string;
-  population: number;
-  name: string;
-  region: string;
-  capital: string;
-  nativeName?: string;
-  subRegion?: string;
-  domain?: string;
-  currencies?: string[];
-  languages?: string[];
-  borderCountries?: string[];
-};
+  flag: string
+  population: number
+  name: string
+  region: string
+  capital: string
+  nativeName?: string
+  subRegion?: string
+  domain?: string
+  currencies?: Currency[]
+  languages?: Language[]
+  borderCountries?: string[]
+}
 
 interface AppState {
-  loadingGetAll: boolean;
-  allCountries?: Country[];
-  singleCountry?: Country;
+  loadingGetAll: boolean
+  allCountries?: Country[]
+  singleCountry?: Country
 }
 
 const initialState: AppState = {
   loadingGetAll: false,
   allCountries: undefined,
   singleCountry: undefined,
-};
+}
 
 const actions = {
   getAllCountries:
     (): Action<AppState> =>
     async ({ setState }) => {
-      setState({ loadingGetAll: true });
+      setState({ loadingGetAll: true })
       try {
-        let countries: Country[] = [];
-        const response = await axios.get("https://restcountries.com/v3.1/all");
+        let countries: Country[] = []
+        const response = await axios.get("https://restcountries.com/v3.1/all")
         await response.data.forEach((el: any) => {
           countries.push({
             name: el.name.common,
@@ -42,18 +55,18 @@ const actions = {
             population: el.population,
             region: el.region,
             capital: el.capital,
-          });
-        });
+          })
+        })
 
-        setState({ allCountries: countries, loadingGetAll: false });
+        setState({ allCountries: countries, loadingGetAll: false })
       } catch (err) {
-        console.log("Fetch error", err);
-        setState({ loadingGetAll: false });
+        console.log("Fetch error", err)
+        setState({ loadingGetAll: false })
       }
     },
 
   getSingleCountry:
-    (value: string): Action<AppState> =>
+    (value: string, isCode?: boolean): Action<AppState> =>
     async ({ setState }) => {
       try {
         let country: Country = {
@@ -62,38 +75,41 @@ const actions = {
           name: "",
           region: "",
           capital: "",
-        };
-        const response = await axios.get(
-          `https://restcountries.com/v2/name/${value}`
-        );
+        }
+
+        const response = !isCode
+          ? await axios.get(`https://restcountries.com/v2/name/${value}`)
+          : await axios.get(`https://restcountries.com/v2/alpha/${value}`)
 
         if (response.data) {
-          country.name = response.data[0].name.common;
-          country.capital = response.data[0].capital;
-          country.flag = response.data[0].flags.png;
-          country.region = response.data[0].region;
-          country.population = response.data[0].population;
-          country.nativeName = response.data[0].name.nativeName;
-          country.subRegion = response.data[0].subregion;
-          country.borderCountries = response.data[0].borders;
-          country.domain = response.data[0].tld;
-          country.currencies = response.data[0].currencies.name;
-          country.languages = response.data[0].languages;
+          if (isCode) response.data = [response.data]
 
-          setState({ singleCountry: country });
+          country.name = response.data[0].name
+          country.capital = response.data[0].capital
+          country.flag = response.data[0].flags.png
+          country.region = response.data[0].region
+          country.population = response.data[0].population
+          country.nativeName = response.data[0].nativeName
+          country.subRegion = response.data[0].subregion
+          country.borderCountries = response.data[0].borders
+          country.domain = response.data[0].topLevelDomain
+          country.currencies = response.data[0].currencies
+          country.languages = response.data[0].languages
+
+          setState({ singleCountry: country })
         }
       } catch (err) {
-        console.log("Fetch error", err);
-        setState({ loadingGetAll: false });
+        console.log("Fetch error", err)
+        setState({ loadingGetAll: false })
       }
     },
 
   clearSingleCountry:
     (): Action<AppState> =>
     ({ setState }) => {
-      setState({ singleCountry: undefined });
+      setState({ singleCountry: undefined })
     },
-};
+}
 
-const AppStateStore = createStore({ initialState, actions });
-export const useAppState = createHook(AppStateStore);
+const AppStateStore = createStore({ initialState, actions })
+export const useAppState = createHook(AppStateStore)
